@@ -5,6 +5,7 @@ import auth from "../../firebase/firebase.config";
 const Register = () => {
   const [registerError, setRegisterError] = useState("");
   const [registerSuccess, setRegisterSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const handleRegister = (e) => {
     e.preventDefault();
     // console.log("Success");
@@ -47,13 +48,21 @@ const Register = () => {
           className="input input-bordered"
           required
         />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          className="input input-bordered"
-          required
-        />
+        <div className="flex items-center">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="password"
+            className="input input-bordered"
+            required
+          />
+          <input
+            onClick={() => setShowPassword(!showPassword)}
+            type="checkbox"
+            className="toggle toggle-xs -ms-9"
+            defaultChecked
+          />
+        </div>
         {registerError && <p className="text-red-600">{registerError}</p>}
         {registerSuccess && <p className="text-green-600">{registerSuccess}</p>}
         <input type="submit" value="Register" className="btn btn-primary" />
