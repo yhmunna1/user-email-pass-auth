@@ -11,7 +11,8 @@ const Register = () => {
     // console.log("Success");
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
+    const accepted = e.target.terms.checked;
+    console.log(email, password, accepted);
 
     // Validations checkup and return
     if (password > 6) {
@@ -38,7 +39,7 @@ const Register = () => {
       });
   };
   return (
-    <div className="card w-80 mx-auto bg-base-200 p-6">
+    <div className="card w-2/4 mx-auto bg-base-200 p-6">
       <h2 className="text-3xl">Please Register</h2>
       <form className="card-body" onSubmit={handleRegister}>
         <input
@@ -53,7 +54,7 @@ const Register = () => {
             type={showPassword ? "text" : "password"}
             name="password"
             placeholder="password"
-            className="input input-bordered"
+            className="input input-bordered w-full"
             required
           />
           <input
@@ -62,6 +63,12 @@ const Register = () => {
             className="toggle toggle-xs -ms-9"
             defaultChecked
           />
+        </div>
+        <div className="my-2">
+          <input type="checkbox" name="terms" id="terms" />
+          <label htmlFor="terms" className="ms-2">
+            Accept our <a href="">Terms and Condition</a>
+          </label>
         </div>
         {registerError && <p className="text-red-600">{registerError}</p>}
         {registerSuccess && <p className="text-green-600">{registerSuccess}</p>}
