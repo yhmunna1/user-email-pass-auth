@@ -1,7 +1,17 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React from "react";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import auth from "../../firebase/firebase.config";
 
 const Login = () => {
+  const [registerError, setRegisterError] = useState("");
+  const [registerSuccess, setRegisterSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const emailRef = useRef(null);
+
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -11,6 +21,29 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         console.log(result.user);
+        setRegisterSuccess("User logged in successfully");
+        // console.log(registerSuccess, "User logged in successfully");
+      })
+      .catch((error) => {
+        console.error(error);
+        setRegisterError(error.message);
+      });
+  };
+
+  const handleForgetPassword = () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      console.log("Please provide an email", emailRef.current.value);
+      return;
+    } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      console.log("Need valid valid email");
+      return;
+    }
+
+    // send validation
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert("Check your email");
       })
       .catch((error) => {
         console.error(error);
@@ -37,6 +70,7 @@ const Login = () => {
               <input
                 type="email"
                 name="email"
+                ref={emailRef}
                 placeholder="email"
                 className="input input-bordered"
                 required
@@ -46,22 +80,41 @@ const Login = () => {
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                name="password"
-                placeholder="password"
-                className="input input-bordered"
-                required
-              />
+              <div className="flex items-center">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="password"
+                  className="input input-bordered w-full"
+                  required
+                />
+                <input
+                  onClick={() => setShowPassword(!showPassword)}
+                  type="checkbox"
+                  className="toggle toggle-xs -ms-9"
+                  defaultChecked
+                />
+              </div>
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a
+                  onClick={handleForgetPassword}
+                  href="#"
+                  className="label-text-alt link link-hover"
+                >
                   Forgot password?
                 </a>
               </label>
             </div>
+            {registerError && <p className="text-red-600">{registerError}</p>}
+            {registerSuccess && (
+              <p className="text-green-600">{registerSuccess}</p>
+            )}
             <div className="form-control mt-6">
               <button className="btn btn-primary">Login</button>
             </div>
+            <p className="pt-5">
+              New here? <Link to="/register">Please Register</Link>
+            </p>
           </form>
         </div>
       </div>
